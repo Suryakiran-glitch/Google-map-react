@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React , {useState , useEffect} from 'react'
+import Map from './component/Map.jsx'
+import Spinner from './component/Loading.jsx'
 
 function App() {
+
+  const [event, setevent] = useState([])
+  const [loading, setloading] = useState(false)
+
+  useEffect(() => {
+    setloading(true)
+    const fetchData = async() => { 
+      const res = await fetch('https://eonet.sci.gsfc.nasa.gov/api/v2.1/events')
+    const {events} = await res.json()
+    setevent(events)
+    setloading(false)
+  }
+  fetchData()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <>
+        {
+          loading ? <Spinner /> : <Map eventData={event} />
+        }
+      </>
   );
 }
 
